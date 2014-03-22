@@ -1,22 +1,22 @@
-#!/bin/bash                                                                                                                                                                                                                      
-##########################################################                                                                                                                                                                       
-## Autor: Percio Andrade                                                                                                                                                                                                        
-## Desenvolvido por : Eros Carvalho                                                                                                                                                                                              
-## Colaboradores : Rafael Terra, Percio Andrade                                                                                                                                                                                 
-## Versão 1.0                                                                                                                                                                                                                    
-##########################################################                                                                                                                                                                       
-                                                                                                                                                                                                                                 
-# variaveis                                                                                                                                                                                                                      
-corPadrao="\033[0m"                                                                                                                                                                                                              
-preto="\033[0;30m"                                                                                                                                                                                                               
-vermelho="\033[0;31m"                                                                                                                                                                                                            
-verde="\033[0;32m"                                                                                                                                                                                                               
-marrom="\033[0;33m"                                                                                                                                                                                                              
-azul="\033[0;34m"                                                                                                                                                                                                                
-purple="\033[0;35m"                                                                                                                                                                                                              
-cyan="\033[0;36m"                                                                                                                                                                                                                
-cinzaClaro="\033[0;37m"                                                                                                                                                                                                          
-pretoCinza="\033[1;30m"                                                                                                                                                                                                          
+#!/bin/bash
+##########################################################
+## Autor: Percio Andrades
+## Desenvolvido por : Eros Carvalho 
+## Colaboradores : Rafael Terra, Percio Andrades
+## Versão 1.0
+##########################################################
+
+# variaveis
+corPadrao="\033[0m"
+preto="\033[0;30m"
+vermelho="\033[0;31m"
+verde="\033[0;32m"
+marrom="\033[0;33m"
+azul="\033[0;34m"
+purple="\033[0;35m"
+cyan="\033[0;36m"
+cinzaClaro="\033[0;37m"
+pretoCinza="\033[1;30m"
 vermelhoClaro="\033[1;31m"
 verdeClaro="\033[1;32m"
 amarelo="\033[1;33m"
@@ -30,7 +30,7 @@ SERVER=$3
 
 function SHOW_HELP(){
   echo "
-  usage: di [-a] [domain] | [ -h --help ]
+  usage: doc [-a] [domain] | [ -h --help ]
 
   Options:
 
@@ -41,8 +41,8 @@ function SHOW_HELP(){
         -h    |   --help        : Opções
  ex:
 
-  d -b xxxxxxxxx-xx | di -b domain.com.br
-  di -a domain.com
+  doc -b xxxxxxxxx-xx | di -b domain.com.br
+  doc -a domain.com
        "
   exit
 
@@ -54,13 +54,12 @@ function SHOW_HELP(){
 function INFO_REGISTRO_BR(){
 CURL_BR=$(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR}| egrep -o "excedida|inexistente|inv&aacute;lida"| head -1)
 if [ "${CURL_BR}" = "excedida" ];then
-        echo -e "Proxy search\n"
-        curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
+     echo -e "Proxy search\n"
+     curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
 elif [ "${CURL_BR}" = "inexistente" ];then
-        echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
+     echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
 else
-        (curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '189,225p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8 | sed -e 's/criado/registrado/g')
-
+    (curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '189,225p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8 | sed -e 's/criado/registrado/g')
 fi
 } 
 
