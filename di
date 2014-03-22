@@ -6,7 +6,7 @@
 ## Versão 1.0
 ##########################################################
 
-# variaveis
+# variaveis baschcss
 corPadrao="\033[0m"
 preto="\033[0;30m"
 vermelho="\033[0;31m"
@@ -30,7 +30,7 @@ SERVER=$3
 
 function SHOW_HELP(){
   echo "
-  usage: doc [-a] [domain] | [ -h --help ]
+  usage: di [-a] [domain] | [ -h --help ]
 
   Options:
 
@@ -41,8 +41,8 @@ function SHOW_HELP(){
         -h    |   --help        : Opções
  ex:
 
-  doc -b xxxxxxxxx-xx | di -b domain.com.br
-  doc -a domain.com
+  di -b xxxxxxxxx-xx | di -b domain.com.br
+  di -a domain.com
        "
   exit
 
@@ -56,8 +56,11 @@ CURL_BR=$(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR}| egrep -o "ex
 if [ "${CURL_BR}" = "excedida" ];then
 	echo -e "Proxy search\n"
 	curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
-elif [ "${CURL_BR}" = "inexistente"||  "${CURL_BR}" = "negada"  ];then
+elif [ "${CURL_BR}" = "inexistente" ];then
 	echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
+
+elif [ "${CURL_BR}" = "negada"  ];then
+	echo -e "Consulta negada"
 else
 	(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '189,225p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8 | sed -e 's/criado/registrado/g')
 
@@ -74,10 +77,6 @@ G_TXT=$ echo -e "\n\033[0;31m Entradas SPF/TXT :\033[0m" && dig txt ${INFO_BR} +
 }
 
 case $1 in
-#  -i) INTERNATION_DOMAIN 
-#  ;;
-#  -b) WHOIS_REGISTRO_BR
-#  ;;
   -a) GET_ALL
   ;;
   -b) INFO_REGISTRO_BR
