@@ -1,0 +1,4 @@
+di
+==
+
+Domain information script
