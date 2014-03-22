@@ -52,14 +52,15 @@ function SHOW_HELP(){
 
 ### query national domain
 function INFO_REGISTRO_BR(){
-CURL_BR=$(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR}| egrep -o "excedida|inexistente|inv&aacute;lida"| head -1)
+CURL_BR=$(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR}| egrep -o "excedida|inexistente|negada"| head -1)
 if [ "${CURL_BR}" = "excedida" ];then
-     echo -e "Proxy search\n"
-     curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
-elif [ "${CURL_BR}" = "inexistente" ];then
-     echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
+	echo -e "Proxy search\n"
+	curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
+elif [ "${CURL_BR}" = "inexistente"||  "${CURL_BR}" = "negada"  ];then
+	echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
 else
-    (curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '189,225p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8 | sed -e 's/criado/registrado/g')
+	(curl -s https://registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '189,225p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8 | sed -e 's/criado/registrado/g')
+
 fi
 } 
 
