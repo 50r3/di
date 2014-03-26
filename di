@@ -1,9 +1,9 @@
 #!/bin/bash
 ##########################################################
-## Autor: Percio Andrade
+## Autor: Percio Andrades
 ## Desenvolvido por : Eros Carvalho 
 ## Colaboradores : Rafael Terra, Percio Andrades
-## Versão 1.1
+## Versão 1.2
 ##########################################################
 
 # variaveis baschcss
@@ -24,6 +24,9 @@ azulClaro="\033[1;34m"
 purpleClaro="\033[1;35m"
 cyanClaro="\033[1;36m"
 branco="\033[1;37m"
+FAIL="\033[0;31m[!]\033[0m";
+
+
 
 INFO_BR=$2
 HOST=$(dig ip +short ${INFO_BR})
@@ -37,7 +40,8 @@ function SHOW_HELP(){
         -b    |   --br          : Informação junto ao registro.br sobre documento e dominio 
         -i    |   --int         : Consulta dominio internacional (ainda não implementado)
         -a    |   --all         : Informações adicionais do dominio
-         
+	-m    |   --map		: Informação sobre portas        
+	
         -h    |   --help        : Opções
  ex:
 
@@ -48,7 +52,26 @@ function SHOW_HELP(){
 
 }
 
+## CHECK DEPENDECIES
+if [ ! -f '/usr/bin/dig' ];then
+	echo -e "
+	${FAIL} - The application ${amar}dig${rese} is not installed on your computer, please install in order to run this script:
+  
+  	   - Red Hat: yum install dig
+  	   - Debian: apt-get install dig
+        "
+exit
 
+elif [ ! -f '/usr/bin/curl' ];then
+
+	echo -e "
+  	${FAIL} - The application ${amar}curl${rese} is not not installed on your computer, please install in order to run this script:
+
+  	- RedHat: yum install curl
+  	- Debian: apt-get install curl
+        "
+ exit
+fi
 
 ### query national domain
 function INFO_REGISTRO_BR(){
@@ -57,7 +80,7 @@ if [ "${CURL_BR}" = "excedida" ];then
 	echo -e "Proxy search\n"
 	curl -s http://tools.badaiocas.com/search.php/registro.br/cgi-bin/whois/?qr=${INFO_BR} | sed -n '194,224p'| sed -e 's/<.*>//g'| iconv -f iso8859-1 -t utf-8
 elif [ "${CURL_BR}" = "inexistente" ];then
-	echo -e "\033[0;31m${INFO_BR}\n\033[1;33mnão consta na base de dados do registro.br\033[0m"
+	echo -e "\033[0;31m${INFO_BR}\n\033[0mnão consta na base de dados do registro.br\033[0m"
 
 elif [ "${CURL_BR}" = "negada"  ];then
 	echo -e "Consulta negada"
@@ -66,6 +89,7 @@ else
 
 fi
 } 
+
 
 ## function get aditional information
 function GET_ALL(){
@@ -77,12 +101,31 @@ G_TXT=$ echo -e "\n\033[0;31m Entradas SPF/TXT :\033[0m" && dig txt ${INFO_BR} +
 G_HOST=$ echo -e "\n\033[0;31m Hostname destino :\033[0m" && host ${HOST} && echo -e "\n"
 }
 
+## nmap check
+function MAP(){
+if [ ! -f /usr/bin/nmap  ];then 
+	echo -e "
+	${FAIL} o pacote \033[1;33mnmap\033[0m não esta instalado. 
+	Este podera ser instalado a partir de ums do comandos abaixo 
+
+	  \033[0;31m -Red Hat : yum install -y namp
+	   -Debian : apt-get install -y nmap\033[0m
+	   "
+else
+	nmap ${INFO_BR}
+fi
+}
+
+
+
 case $1 in
   -a) GET_ALL
   ;;
   -b) INFO_REGISTRO_BR
   ;;
-  -h) SHOW_HELP
+ -m) MAP
+  ;; 
+ -h) SHOW_HELP
   ;;
   *) SHOW_HELP
   esac
