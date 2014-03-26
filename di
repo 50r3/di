@@ -1,9 +1,9 @@
 #!/bin/bash
 ##########################################################
-## Autor: Percio Andrades
+## Autor: Percio Andrade
 ## Desenvolvido por : Eros Carvalho 
 ## Colaboradores : Rafael Terra, Percio Andrades
-## Versão 1.0
+## Versão 1.1
 ##########################################################
 
 # variaveis baschcss
@@ -26,7 +26,7 @@ cyanClaro="\033[1;36m"
 branco="\033[1;37m"
 
 INFO_BR=$2
-SERVER=$3
+HOST=$(dig ip +short ${INFO_BR})
 
 function SHOW_HELP(){
   echo "
@@ -74,6 +74,7 @@ G_NS=$ echo -e "\n\033[0;31m Servidores DNS :\033[0m" &&  dig ns ${INFO_BR} +sho
 G_IP=$ echo -e "\n\033[0;31m IP para ${DOMAIN} :\033[0m" && dig ip ${INFO_BR} +short
 G_MX=$ echo -e "\n\033[0;31m Entradas MX :\033[0m" && dig mx ${INFO_BR} +short
 G_TXT=$ echo -e "\n\033[0;31m Entradas SPF/TXT :\033[0m" && dig txt ${INFO_BR} +short 
+G_HOST=$ echo -e "\n\033[0;31m Hostname destino :\033[0m" && host ${HOST} && echo -e "\n"
 }
 
 case $1 in
